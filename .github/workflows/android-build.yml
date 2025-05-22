@@ -35,21 +35,19 @@ jobs:
       - name: Install Expo CLI
         run: npm install -g expo-cli eas-cli
 
-      - name: Build APK
-        run: |
-          eas build --platform android --profile preview --non-interactive --no-wait
+      - name: Build APK and wait for completion
+        run: eas build --platform android --profile preview --non-interactive --wait
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
-      - name: Download APK
-        uses: actions/download-artifact@v3
-        with:
-          name: app-release.apk
-          path: ./build
+      - name: Download latest build artifact (using EAS CLI)
+        run: eas build:download --platform android --profile preview --latest --output ./app-release.apk
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
-      - name: Upload APK
+      - name: Upload APK (using actions/upload-artifact)
         uses: actions/upload-artifact@v3
         with:
           name: app-release.apk
-          path: ./build/app-release.apk
+          path: ./app-release.apk
           if-no-files-found: error 
