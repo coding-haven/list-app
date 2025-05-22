@@ -3,6 +3,7 @@ import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
+import { ListsProvider } from './context/ListsContext';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 
@@ -19,10 +20,24 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
+      <ListsProvider>
+        <Stack>
+          <Stack.Screen
+            name="index"
+            options={{
+              title: 'My Ranked Lists',
+              headerLargeTitle: true,
+            }}
+          />
+          <Stack.Screen
+            name="list/[id]"
+            options={{
+              title: 'List Details',
+              headerBackTitle: 'Back',
+            }}
+          />
+        </Stack>
+      </ListsProvider>
       <StatusBar style="auto" />
     </ThemeProvider>
   );
